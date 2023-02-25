@@ -6,6 +6,6 @@ module.exports = {
     devServer: {
         contentBase: path.resolve(__dirname, './dist'),
         open: true,
-        historyApiFallback: true,   
+        historyApiFallback: true,
     },
 };

@@ -183,15 +183,15 @@ export class EditCardView {
 
         inputNameUser.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
-            newName = target.value;
+            newName = target.value.trim();
         });
         inputNumberPhone.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
-            newNumber = target.value;
+            newNumber = target.value.trim();
         });
         inputWishes.addEventListener('input', (e) => {
             const target = e.target as HTMLInputElement;
-            newWishes = target.value;
+            newWishes = target.value.trim();
         });
 
         if (submitCardEdit) {

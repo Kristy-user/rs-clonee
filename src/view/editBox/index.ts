@@ -195,7 +195,8 @@ export class EditBoxView {
             let newName = '';
             inputNameBox.addEventListener('input', (e) => {
                 const target = e.target as HTMLInputElement;
-                newName = target.value;
+                newName = target.value.trim();
+                console.log(newName);
             });
             submitBoxName.addEventListener('click', async () => {
                 if (newName && this.box && this.userId) {
