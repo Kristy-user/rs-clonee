@@ -196,7 +196,6 @@ export class EditBoxView {
             inputNameBox.addEventListener('input', (e) => {
                 const target = e.target as HTMLInputElement;
                 newName = target.value.trim();
-                console.log(newName);
             });
             submitBoxName.addEventListener('click', async () => {
                 if (newName && this.box && this.userId) {
@@ -213,13 +212,14 @@ export class EditBoxView {
                 this.controller.route(this.model.route.origin + `/box/${(this.box as IBoxReq).box_id}/santas`)
             );
         }
-        const buttonDelete = document.querySelector('#submit-delete');
+        const buttonDelete: HTMLButtonElement | null = document.querySelector('#submit-delete');
         if (buttonDelete) {
             buttonDelete.addEventListener('click', async () => {
+                buttonDelete.setAttribute('disabled', '');
                 toggleLoader();
                 await deleteBox(this.cards, this.box, this.controller, Number(this.userId));
-                toggleLoader();
                 this.controller.route(this.model.route.origin + `/account/boxes`);
+                toggleLoader();
             });
         }
     }

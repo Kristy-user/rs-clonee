@@ -1,14 +1,15 @@
-import { Card } from '../model/card';
-import { UserBoxes } from '../model/userBoxes';
-import { Box } from '../model/box';
 import { USR_STATE } from '../db/usr-state';
-
-export function checkNewCard(form: HTMLFormElement, div: HTMLDivElement) {
+import { toggleLoader } from '../utils/utils';
+import { Model } from '../model';
+import { Controller } from '.';
+export function checkNewCard(form: HTMLFormElement, div: HTMLDivElement, controller: Controller, model: Model) {
     form.addEventListener(
         'submit',
         async (event) => {
             const SUBMIT_BUTTON = document.getElementsByClassName('ucard__btn')[0] as HTMLButtonElement;
             SUBMIT_BUTTON.setAttribute('disabled', '');
+            SUBMIT_BUTTON.innerHTML = `  <span class="spinner-border spinner-border-sm mx-2" role="status" aria-hidden="true"></span>
+            Создаю...`;
             const ERR = document.getElementsByClassName('ucard__err')[0] as HTMLDivElement;
             ERR.classList.add('visually-hidden');
             if (!form.checkValidity()) {
@@ -21,12 +22,12 @@ export function checkNewCard(form: HTMLFormElement, div: HTMLDivElement) {
                     return el.classList.contains('active');
                 });
                 if (VALIDATE_PIC) {
-                    const CARD = new Card();
-                    const U_BOX = new UserBoxes();
+                    const CARD = model.cardModel;
+                    const U_BOX = model.userBoxesModel;
                     const INPUT = document.getElementById('ucardInput') as HTMLInputElement;
                     const WISHES_INPUT = document.getElementById('wishesInput') as HTMLInputElement;
-                    const userName = INPUT.value;
-                    const wishes = WISHES_INPUT.value;
+                    const userName = INPUT.value.trim();
+                    const wishes = WISHES_INPUT.value.trim();
                     const wardId = null;
                     const wardGift = false;
                     const cardGift = false;
@@ -44,6 +45,7 @@ export function checkNewCard(form: HTMLFormElement, div: HTMLDivElement) {
                     if (!isUserCard) {
                         const phone = USR_STATE.phonenumber;
                         const email = USR_STATE.email;
+                        toggleLoader();
                         const NEW_CARD = await CARD.create({
                             userName,
                             wardId,
@@ -56,22 +58,25 @@ export function checkNewCard(form: HTMLFormElement, div: HTMLDivElement) {
                             cardGift,
                             email,
                         });
-                        const BOX = new Box();
+                        const BOX = model.boxModel;
                         const BOX_OBJ = await BOX.getByBoxId(localStorage.boxId);
                         const CARD_ARR = BOX_OBJ.cards_id;
                         CARD_ARR.push(NEW_CARD.card_id);
                         const id = localStorage.boxId;
                         const cardsId = CARD_ARR;
                         await BOX.update(id, { cardsId });
+                        toggleLoader();
                     }
                     localStorage.invite = '';
-                    location.replace(location.origin + `/box/${boxId}`);
+                    controller.route(model.route.origin + `/box/${boxId}`);
                 } else {
                     ERR.classList.remove('visually-hidden');
+                    SUBMIT_BUTTON.innerHTML = `Создать`;
                     SUBMIT_BUTTON.removeAttribute('disabled');
                 }
             }
             form.classList.add('was-validated');
+            SUBMIT_BUTTON.innerHTML = `Создать`;
             SUBMIT_BUTTON.removeAttribute('disabled');
         },
         false
