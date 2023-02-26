@@ -10,7 +10,7 @@ export class RouterModel {
         return {
             host,
             origin,
-            path: route.pathname.replace(State.deployPath, '/').split('/'),
+            path: route.pathname.split('/'),
         };
     }
 }
