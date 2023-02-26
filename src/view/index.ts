@@ -162,7 +162,7 @@ export class View {
                         break;
                     } else await this.boxMenu.render(path2);
                     await this.boxView.render(path2);
-                    this.boxView.addListeners();
+                    this.boxView.addListeners(this.model, path2);
                     break;
                 } else {
                     this.loginView.render();

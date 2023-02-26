@@ -107,7 +107,8 @@ export class BoxView {
         }
     }
 
-    addListeners() {
+    addListeners(model: Model, path: string) {
+        this.model.on('box', () => this.render(path));
         const link = document.querySelector('.copy-link') as HTMLInputElement;
         if (link) {
             link.value = `${this.model.route.origin}/invite/${this.box?.invited_key}`;
